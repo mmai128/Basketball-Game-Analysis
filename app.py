@@ -410,6 +410,119 @@ for col, (icon, name) in zip(st.columns(5), classes):
 
 
 # Analysis workspace
+# Interactive demo
+
+DEMO_DIR = BASE_DIR / "assets" / "demo"
+
+SAMPLE_IMAGE = DEMO_DIR / "sample.png"
+ORIGINAL_VIDEO = DEMO_DIR / "original.mp4"
+DETECTED_VIDEO = DEMO_DIR / "detected.mp4"
+
+st.markdown("""
+<div class="section-heading">
+EXPERIENCE COURTSIDE AI
+</div>
+<div class="section-description">
+Explore basketball computer vision in action.
+No upload required.
+</div>
+""", unsafe_allow_html=True)
+
+demo_image_tab, demo_video_tab = st.tabs([
+    "🏀 LIVE IMAGE DEMO",
+    "🎬 VIDEO TRACKING SHOWCASE"
+])
+
+# Live image inference demo
+
+with demo_image_tab:
+
+    if SAMPLE_IMAGE.exists():
+
+        sample = Image.open(SAMPLE_IMAGE).convert("RGB")
+
+        left, right = st.columns(2)
+
+        with left:
+            st.subheader("Sample Image")
+            st.image(sample, use_container_width=True)
+
+        if st.button(
+            "TRY OUR AI",
+            key="run_demo_image"
+        ):
+            try:
+                with st.spinner("Running AI detection..."):
+
+                    model = load_model()
+
+                    st.session_state["demo_prediction"] = (
+                        predict_image(model, sample, confidence)
+                    )
+
+                    st.session_state["demo_confidence"] = confidence
+
+            except Exception as error:
+                st.error(str(error))
+
+        with right:
+            st.subheader("AI Detection Results")
+
+            if (
+                "demo_prediction" in st.session_state
+                and st.session_state.get("demo_confidence")
+                == confidence
+            ):
+                st.image(
+                    st.session_state["demo_prediction"],
+                    use_container_width=True
+                )
+            else:
+                st.info(
+                    "Click TRY OUR AI to run live detection."
+                )
+
+    else:
+        st.warning("Demo image is unavailable.")
+
+
+# Preprocessed video demonstration
+
+with demo_video_tab:
+
+    st.caption(
+        "Watch a preprocessed demonstration of "
+        "basketball detection and multi-object tracking."
+    )
+
+    left, right = st.columns(2)
+
+    with left:
+        st.subheader("Original Footage")
+
+        if ORIGINAL_VIDEO.exists():
+            st.video(str(ORIGINAL_VIDEO))
+        else:
+            st.warning("Original video is unavailable.")
+
+    with right:
+        st.subheader("AI Tracking Results")
+
+        if DETECTED_VIDEO.exists():
+            st.video(str(DETECTED_VIDEO))
+
+            st.download_button(
+                label="DOWNLOAD DEMO VIDEO",
+                data=DETECTED_VIDEO.read_bytes(),
+                file_name="courtside_demo.mp4",
+                mime="video/mp4",
+                key="download_demo"
+            )
+
+        else:
+            st.warning("Demo video is unavailable.")
+
+st.divider()
 
 st.markdown("""
 <div class="section-heading">
