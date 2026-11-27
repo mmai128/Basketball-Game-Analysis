@@ -16,7 +16,7 @@ st.set_page_config(
     page_title="COURTSIDE AI | Basketball Vision",
     page_icon="🏀",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 BASE_DIR = Path(__file__).parent
@@ -244,10 +244,91 @@ h1, h2, h3 {
     color: #FDB927;
 }
 
+/* Mobile layout: display the entire hero image above the text. */
+.hero-mobile-photo {
+    display: none;
+}
+
 @media (max-width: 768px) {
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .brand {
+        font-size: clamp(24px, 7vw, 35px);
+        letter-spacing: 2px;
+    }
+
+    .brand-subtitle {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+    }
+
     .hero {
-        padding: 24px;
-        min-height: 350px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        min-height: 0;
+        padding: 0;
+        background: linear-gradient(145deg, #101a2e, #090e19) !important;
+        border-radius: 20px;
+    }
+
+    .hero-mobile-photo {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        border-bottom: 1px solid #34425a;
+    }
+
+    .hero-content {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        padding: 22px 18px;
+        overflow-wrap: break-word;
+    }
+
+    .eyebrow {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        margin-bottom: 14px;
+    }
+
+    .hero-title {
+        font-size: clamp(34px, 9vw, 50px);
+        line-height: 1;
+        letter-spacing: 0.5px;
+    }
+
+    .hero-description {
+        font-size: 14px;
+        line-height: 1.6;
+        margin-top: 16px;
+    }
+
+    .tech-tag {
+        font-size: 10px;
+        padding: 6px 9px;
+        margin: 12px 4px 0 0;
+    }
+
+    .hero-credit {
+        margin-top: 22px !important;
+        font-size: 11px !important;
+        letter-spacing: 1.4px !important;
+        line-height: 1.6;
+    }
+
+    .kpi-value {
+        font-size: 38px;
+    }
+
+    .section-heading {
+        font-size: 26px;
     }
 }
 
@@ -264,10 +345,17 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+hero_mobile_photo = ""
+
 if HERO_PATH.exists():
     hero_image = base64.b64encode(
         HERO_PATH.read_bytes()
     ).decode()
+
+    hero_mobile_photo = (
+        f'<img class="hero-mobile-photo" src="data:image/png;base64,{hero_image}" '
+        'alt="Basketball hero image">'
+    )
 
     hero_background = f"""
     background-image:
@@ -292,6 +380,7 @@ else:
 
 st.markdown(f"""
 <div class="hero" style="{hero_background}">
+{hero_mobile_photo}
 <div class="hero-content">
 <div class="eyebrow">THE FUTURE OF SPORTS INTELLIGENCE</div>
 <div class="hero-title">
@@ -305,7 +394,7 @@ with advanced object detection and multi-object tracking.
 <span class="tech-tag">YOLO26s</span>
 <span class="tech-tag">BYTETRACK</span>
 <span class="tech-tag">COMPUTER VISION</span>
-<div style="margin-top:30px;color:#FDB927;font-size:15px;letter-spacing:2px;font-weight:700;">
+<div class="hero-credit" style="margin-top:30px;color:#FDB927;font-size:15px;letter-spacing:2px;font-weight:700;">
 DESIGNED & DEVELOPED BY MAI MOHAMMED
 </div>
 </div>
